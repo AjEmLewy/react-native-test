@@ -1,22 +1,26 @@
-import React from 'react';
-import { StyleSheet, Text,View } from 'react-native';
-import {MyImage} from './LoginPageContainers'
+import * as React from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+import Constants from 'expo-constants';
 
-export default function App() {
-  return (
-    <View style = {styles.container}>
-      <MyImage />
-      <Text> I just called to say I love you!</Text>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
+// You can import from local files
+import LoginPage from './components/LoginPage/main_LoginComponent';
+// or any pure javascript modules available in npm
+
+export default class App extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <LoginPage/>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#E8DAEF',
-    alignItems: 'center',
+    flex:1,
     justifyContent: 'center',
-  },
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#FFFFFF',
+  }
 });

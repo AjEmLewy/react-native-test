@@ -31,11 +31,15 @@ const styles = StyleSheet.create({
     alignItems: 'stretch'
   },
   logoPart: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems:'center',
     flex:5,
     backgroundColor: '#76B5EC',
   },
   formPart: {
     flex:10,
+    alignItems:'center',
     backgroundColor: '#9ECBF1'
   },
   footerPart: {

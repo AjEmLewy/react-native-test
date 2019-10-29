@@ -8,7 +8,9 @@ export default class FormComponent extends React.Component
       <View style={styles.mainContainer}>
         <PickerComponent/>
         <Text style={styles.text}>Password:</Text>
-        <InputPassword/>
+        <View style={{flex:1}}>
+          <InputPassword/>
+        </View>
       </View>
     )
   }
@@ -26,15 +28,19 @@ class PickerComponent extends React.Component
 
   render() { 
      return (
-      <Picker 
-        selectedValue={this.state.animator}
-        style={styles.picker}
-        onValueChange={this.valueChanged}
-      >
-      <Picker.Item label='Lukas' value='luki'/>
-      <Picker.Item label='Maciej' value='Maciej'/>
+     <View style={{flex:1, justifyContent: 'center',
+     alignContent: 'center',
+     alignItems:'center',backgroundColor:'yellow'}}>
+        <Picker 
+          selectedValue={this.state.animator}
+          style={styles.picker}
+          onValueChange={this.valueChanged}
+        >
+          <Picker.Item label='Lukas' value='luki'/>
+          <Picker.Item label='Maciej' value='Maciej'/>
 
-       </Picker>
+        </Picker>
+      </View>
      )
   }
 }
@@ -49,7 +55,7 @@ class InputPassword extends React.Component
     return (<TextInput
     secureTextEntry
     autoCompleteType={'off'}
-    onSubmitEditing=(nativeEvent) =>{console.log(nativeEvent.text)}
+    onSubmitEditing={(nativeEvent) =>{console.log(nativeEvent.text)}}
     style={styles.inputText}
     />)
   }
@@ -59,18 +65,21 @@ class InputPassword extends React.Component
 
 const styles = StyleSheet.create({
   mainContainer: {
-    flex:0.5,
+    flex:1,
     flexDirection:'column',
-    margin:'auto',
-    justifyContent: 'space-evenly',
-    
   },
   picker: {
     textAlign:'center',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems:'center',
+    alignSelf: 'center',
     width:170,
-    height:25
+    height:25,
+    backgroundColor: 'white'
   },
   text: {
+    flex:1,
     textAlign:'center'
   },
   inputText: {
@@ -80,6 +89,5 @@ const styles = StyleSheet.create({
     width:170,
     height:30,
     textAlign:'center',
-    type: 'password'
   }
 })
