@@ -16,7 +16,7 @@ export default class SpotkaniaPage extends React.Component
     }
     getSpotkania = async () =>
     {
-        resp = await fetch('http://192.168.100.4:2000/spotkania')
+        let resp = await fetch('http://192.168.100.4:2000/spotkania')
         this.spotkania = await resp.json()
         this.spotkania.sort(sort_spotkanie_by_date)
         this.setState({isDataFetched:true})
