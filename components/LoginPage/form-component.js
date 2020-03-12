@@ -4,22 +4,29 @@ import { StyleSheet, Text, View, Picker, TextInput, Button } from 'react-native'
 export default class FormComponent extends React.Component
 {
   state = {
+    isDataFetched: false,
+    animatorzy: [],
     animator: '',
-    password: '',
-    buttonTitle: 'Logee in'
+    password: ''
+  }
+
+  onPasswordTextChange = (text) =>
+  {
+    this.setState({password:text})
   }
 
   onLogIn = () => 
   {
-    this.setState({buttonTitle:'ss'})
+    // fetch the data from server
   }
+
   render(){
     return (
-      this.props.animatorzy.length > 0?
+      this.state.isDataFetched ?
       <View style={styles.mainContainer}>
-        <PickerComponent animatorzy = {this.props.animatorzy}/>
+        <PickerComponent animatorzy = {this.state.animatorzy}/>
         <View style={{flex:1}}>
-          <InputPassword onChangeText = {this.props.onChangeText}/>
+          <InputPassword onChangeText = {this.onPasswordTextChange}/>
         </View>
         <ButtonComponent title = {this.state.buttonTitle} onPressLogin = {this.onLogIn}/>
       </View>
@@ -31,7 +38,7 @@ export default class FormComponent extends React.Component
 class PickerComponent extends React.Component
 {
   state = {
-    animator:this.props.animatorzy.length>0? this.props.animatorzy[1].id : null 
+    animator:this.state.animatorzy.length>0 ? this.props.animatorzy[1].id : null 
   }
 
   valueChanged = (itemValue, itemPosition) => {
@@ -59,10 +66,6 @@ class PickerComponent extends React.Component
 
 class InputPassword extends React.Component
 {
-  state= {
-    password:''
-  }
-
   render() {
     return (<TextInput
     secureTextEntry
@@ -77,7 +80,7 @@ class InputPassword extends React.Component
 class ButtonComponent extends React.Component {
   render(){
     return(
-      <Button title={this.props.title} onPress = {this.props.onPressLogin}/>
+      <Button title="Log In" onPress = {this.props.onPressLogin}/>
     )
   }
 }

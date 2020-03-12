@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Dimensions} from 'react-native';
 import * as Font from 'expo-font';
+
 const window = Dimensions.get('window')
 
 export default class MainPage extends React.Component
@@ -8,6 +9,8 @@ export default class MainPage extends React.Component
     render() {
         return(
             <View style={{flex:0.5, }}>
+                <TouchableOpacity onPress={() => this.context.logUser("sss")}><Text>PRESS THISSS</Text></TouchableOpacity>
+                <Text>{this.context.loggedUser}</Text>
                 <EditMyGroupComponent />
                 <EditOtherGroup/>
                 <StatisticsComponent/>
@@ -15,7 +18,6 @@ export default class MainPage extends React.Component
         )
     }
 }
-
 
 class EditMyGroupComponent extends React.Component
 {

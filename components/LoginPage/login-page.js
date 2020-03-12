@@ -1,19 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 
-import MyImage from './logoComponent'
-import FormComponent from './formComponent'
+import MyImage from './logo-component'
+import FormComponent from './form-component'
 
 export default class LoginPage extends React.Component{
-    state = {
-      anim_id:{},
-      password:''
-    }
-
-    onPasswordTextChange = (text) =>
-    {
-      this.setState({password:text})
-    }
 
     render() {
       return(
@@ -22,7 +13,7 @@ export default class LoginPage extends React.Component{
             <MyImage/>
           </View>
           <View style={styles.formPart}>
-            <FormComponent animatorzy = {this.props.animatorzy} onChangeText={this.onPasswordTextChange}/>
+            <FormComponent />
           </View>
           <View style={styles.footerPart}>
             <Text>Kopirajt baj mi</Text>

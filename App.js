@@ -1,33 +1,42 @@
+import 'react-native-gesture-handler';
 import * as React from 'react';
-import {View, Dimensions, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import {View, Dimensions, StyleSheet, KeyboardAvoidingView, Text } from 'react-native';
 import Constants from 'expo-constants';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
+import LoginPage from './components/LoginPage/login-page';
+import MainPage from './components/MainPage/main-page';
+import SpotkaniaPage from './components/SpotkaniaPage/spotkania-page'
+import {UserContext} from "./contexts/user-context"
 
-import LoginPage from './components/LoginPage/main_LoginComponent';
-import MainPage from './components/MainPage/mainPage';
-import SpotkaniaPage from './components/SpotkaniaPage/spotkaniaPage'
-
+const Stack = createStackNavigator();
 
 export default class App extends React.Component {
+
+  
+  logUser = (meh) => {
+    this.setState({loggedUser:meh})
+  }
+
   state = {
-    animatorzy:[],
-    myId:1
-  }
-  getAnimatoris = async () => {
-    resp = await fetch("http://192.168.100.4:2000/animatorzy")
-    respJson = await resp.json()
-    this.setState({'animatorzy': respJson})
+    loggedUser: 0,
+    logUser: this.logUser
   }
 
-  componentDidMount() {
-    this.getAnimatoris()
-  }
-
+  // Zmień to i tak żeby Login był tylko jeśli userId=0.
   render() {
-    return (
-      <View style={styles.container}>
-        <SpotkaniaPage/>
-      </View>
+    return ( 
+      this.state.loggedUser ?
+      <NavigationContainer>
+        <UserContext.Provider value={this.state}>
+          <Stack.Navigator initialRouteName="Main">
+            <Stack.Screen name="Main" component={MainPage} />
+          </Stack.Navigator>
+        </UserContext.Provider>
+      </NavigationContainer>
+      :
+      <LoginPage/>
     );
   }
 }
