@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import {View, ScrollView, Text, Dimensions, StyleSheet,TouchableOpacity} from 'react-native'
+const _ = require("lodash")
 
 import {sort_spotkanie_by_date} from '../../utils'
 import * as Font from 'expo-font';
@@ -27,7 +28,10 @@ export default class ObecnoscPage extends React.Component {
             {id:1,name:"Grzegorz Piwowarczyk",animatorId:2,nieobecne:[2,3],odrobione:[1,4,5]},
             {id:2,name:"Grzegorz Piwowarczyk",animatorId:2,nieobecne:[1,2,3],odrobione:[4,5]},
             {id:3,name:"Grzegorz Piwowarczyk",animatorId:2,nieobecne:[2,3],odrobione:[4,5]},
-            {id:4,name:"Grzegorz Piwowarczyk",animatorId:2,nieobecne:[1,2,3],odrobione:[4,5]}
+            {id:4,name:"Grzegorz Piwowarczyk",animatorId:2,nieobecne:[1,2,3],odrobione:[4,5]},
+            {id:5,name:"Grzegorz Piwowarczyk",animatorId:2,nieobecne:[1,2,3],odrobione:[4,5]},
+            {id:6,name:"Grzegorz Piwowarczyk",animatorId:2,nieobecne:[2,3],odrobione:[4,5]},
+            {id:7,name:"Grzegorz Piwowarczyk",animatorId:2,nieobecne:[1,2,3],odrobione:[4,5]}
         ]})
         this.setState({isDataFetched:true})
     }
@@ -40,6 +44,53 @@ export default class ObecnoscPage extends React.Component {
         this.setState({isFontLoaded:true})
     }
 
+    changeObecnosc = async (bierzmowaniecId, switchType) => {
+        let valueChanged = false
+        let spotkanie = this.context.editting.spotkanieID
+        //let newBierzmowancy = JSON.parse(JSON.stringify(this.state.bierzmowancy))
+        let newBierzmowancy = [...this.state.bierzmowancy]
+        //console.log(newBierzmowancy)
+        newBierzmowancy.forEach((b, index) => {
+            if (bierzmowaniecId === b.id) {
+                switch (switchType) {
+                    case 'obecny':
+                        console.log("w obecny.")
+                        console.log(spotkanie)
+                        console.log(b.odrobione.includes(spotkanie))
+                        if (b.nieobecne.includes(spotkanie) || b.odrobione.includes(spotkanie)) {
+                            console.log("dalej")
+                            _.pull(newBierzmowancy[index].nieobecne,spotkanie)
+                            _.pull(newBierzmowancy[index].odrobione,spotkanie)
+                            valueChanged = true
+                        }
+                        break;
+                    case 'odrobione':
+                        if (!b.odrobione.includes(spotkanie)) {
+                            _.pull(newBierzmowancy[index].nieobecne,spotkanie)
+                            newBierzmowancy[index].odrobione.push(spotkanie)
+                            //newBierzmowancy[index].odrobione = _.sortBy(newBierzmowancy.odrobione)
+                            valueChanged = true
+                        }
+                        break;
+                    case 'nieobecny':
+                        if(!b.nieobecne.includes(spotkanie)) {
+                            _.pull(newBierzmowancy[index].odrobione,spotkanie)
+                            newBierzmowancy[index].nieobecne.push(spotkanie)
+                            //newBierzmowancy[index].nieobecne = _.sortBy(newBierzmowancy.nieobecne)
+                            valueChanged = true
+                        }
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+        });
+        if(valueChanged) {
+            this.setState({bierzmowancy:newBierzmowancy})
+        }
+    } 
+
     componentDidMount() {
         this.loadFont()
         this.fetchBierzmowancy()
@@ -47,6 +98,7 @@ export default class ObecnoscPage extends React.Component {
 
     render() {
         return (
+            this.state.isFontLoaded && this.state.isDataFetched ?
             <View>
                 <TitleComponent title={this.context.editting.title}/>
                 <ScrollView>
@@ -54,13 +106,16 @@ export default class ObecnoscPage extends React.Component {
                     {
                         this.state.bierzmowancy.map(bierzmowaniec =>
                         <BierzmowaniecTab 
-                        spotkanie={this.context.editting.spotkanieID} 
+                        spotkanie={this.context.editting.spotkanieID}
+                        press = {this.changeObecnosc} 
                         bierzmowaniec={bierzmowaniec} key={bierzmowaniec.id}
                         />)
                     }
                     </View>
                 </ScrollView>
             </View>
+            :
+            <Text>Lołding....</Text>
         )
     }
 }
@@ -101,12 +156,15 @@ class BierzmowaniecTab extends React.Component {
         return (
             <View style = {[styles.bierzmowaniecContainer, styles[this.obecnosc]]}>
                 <View style = {styles.nazwiskoTextContainer}>
-                    <Text>{this.props.bierzmowaniec.name}</Text>
+                    <Text style={styles.vText}>{this.props.bierzmowaniec.name}</Text>
                 </View>
                 <View style ={styles.buttonsContainer}>
-                    <Button style={styles.obecnyButton} title={"obecny"}/>
-                    <Button style={styles.odrobioneButton} title={"odrobione"}/>
-                    <Button style={styles.nieobecnyButton} title={"nieobecny"}/>
+                    <Button style={[styles.obecnyButton, styles.button]} id={this.props.bierzmowaniec.id} 
+                        press = {this.props.press} title={"obecny"}/>
+                    <Button style={[styles.odrobioneButton, styles.button]} id={this.props.bierzmowaniec.id}
+                        press = {this.props.press} title={"odrobione"}/>
+                    <Button style={[styles.nieobecnyButton, styles.button]} id={this.props.bierzmowaniec.id} 
+                        press = {this.props.press} title={"nieobecny"}/>
                 </View>
             </View>
         )
@@ -114,9 +172,13 @@ class BierzmowaniecTab extends React.Component {
 }
 
 class Button extends React.Component {
+
+
     render(){
         return(
-            <TouchableOpacity style={this.props.style}>
+            <TouchableOpacity 
+            onPress = {() => {this.props.press(this.props.id, this.props.title)}}
+            style={this.props.style}>
                 <Text>{this.props.title}</Text>
             </TouchableOpacity>
         )
@@ -131,7 +193,8 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         flexDirection: "column",
         justifyContent:"flex-start",
-        alignItems:"center"
+        alignItems:"center",
+        backgroundColor: '#76B5EC'
     },
     bierzmowaniecContainer: {
         borderColor: 'gold',
@@ -148,7 +211,6 @@ const styles = StyleSheet.create({
         flex: 3,
         justifyContent: 'center',
         alignItems: 'center'
-
     },
     buttonsContainer:{
         flex:1,
@@ -157,7 +219,10 @@ const styles = StyleSheet.create({
         alignContent:"stretch",
     },
 
-
+    vText: {
+        fontSize:windowHeight*0.04,
+        fontFamily:'vinchand'
+    },
 
     obecny: {
         backgroundColor: OBECNOSC_COLOR,
@@ -168,25 +233,27 @@ const styles = StyleSheet.create({
     odrobione: {
         backgroundColor: ODROBIONE_COLOR,
     },
-
+    button : {
+        shadowColor: 'rgba(0,0,0, .4)', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 1, // IOS
+        shadowRadius: 1, //IOS
+        elevation: 2, // Android
+        flex:1,
+        alignContent:'center',
+        alignItems:'center',
+        marginBottom:2,
+        marginTop: 2
+    },
     obecnyButton : {
         backgroundColor: OBECNOSC_COLOR,
-        flex:1,
         borderTopRightRadius: windowWidth/20,
-        alignContent:'center',
-        alignItems:'center'
     },
     nieobecnyButton : {
         backgroundColor: NIEOBECNOSC_COLOR,
-        flex:1,
         borderBottomRightRadius: windowWidth/20,
-        alignContent:'center',
-        alignItems:'center'
     },
     odrobioneButton : {
         backgroundColor: ODROBIONE_COLOR,
-        flex:1,
-        alignContent:'center',
-        alignItems:'center'
     }
     })
