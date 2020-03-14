@@ -8,7 +8,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginPage from './components/LoginPage/login-page';
 import MainPage from './components/MainPage/main-page';
 import SpotkaniaPage from './components/SpotkaniaPage/spotkania-page'
-import {UserContext} from "./contexts/user-context"
+import ObecnoscPage from './components/ObecnoscPage/obecnosc-page'
+import {AppContext} from "./contexts/app-context"
 
 const Stack = createStackNavigator();
 
@@ -19,21 +20,33 @@ export default class App extends React.Component {
     this.setState({loggedUser:meh})
   }
 
+  setEditting = (id, date, groupID, title) => {
+    this.setState({editting: {spotkanieID:id,date:date,groupID:groupID,title:title}})
+  }
+
   state = {
-    loggedUser: 0,
-    logUser: this.logUser
+    loggedUserID: 1,
+    logUser: this.logUser,
+    editting: {
+      spotkanieID: 1,
+      date: "",
+      groupID: 1,
+      title:"ciekawe."
+    }
   }
 
   // Zmień to i tak żeby Login był tylko jeśli userId=0.
   render() {
     return ( 
-      this.state.loggedUser ?
+      this.state.loggedUserID ?
       <NavigationContainer>
-        <UserContext.Provider value={this.state}>
-          <Stack.Navigator initialRouteName="Main">
+        <AppContext.Provider value={this.state}>
+          <Stack.Navigator initialRouteName="Obecnosc">
             <Stack.Screen name="Main" component={MainPage} />
+            <Stack.Screen name="MyGroup" component={SpotkaniaPage} />
+            <Stack.Screen name="Obecnosc" component={ObecnoscPage} />
           </Stack.Navigator>
-        </UserContext.Provider>
+        </AppContext.Provider>
       </NavigationContainer>
       :
       <LoginPage/>

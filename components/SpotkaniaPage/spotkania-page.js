@@ -22,6 +22,15 @@ export default class SpotkaniaPage extends React.Component
         this.setState({isDataFetched:true})
     }
 
+    getTempSpotkania = () => {
+        this.spotkania = [{id: 1, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"},
+        {id: 2, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"},
+        {id: 3, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"},
+        {id: 4, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"},
+        {id: 5, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"}]
+        this.setState({isDataFetched:true})
+    }
+
     loadFont = async () =>
     {
         await Font.loadAsync({
@@ -32,20 +41,17 @@ export default class SpotkaniaPage extends React.Component
 
     componentDidMount()
     {
-        this.getSpotkania()
+        //this.getSpotkania()
+        this.getTempSpotkania()
         this.loadFont()
     }
-    temp_spotkania = [{id: 1, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"},
-    {id: 2, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"},
-    {id: 3, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"},
-    {id: 4, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"},
-    {id: 5, title:"Bardzo długi tytuł w zasadzie",data:"2019-11-02"}]
+    
     render() {
         return(
             this.state.isDataFetched && this.state.isFontLoaded? 
             <ScrollView>
             <View style={{flex:1, flexWrap: 'wrap', flexDirection:'row'}}>
-            {this.temp_spotkania.map((spotkanie) =>
+            {this.spotkania.map((spotkanie) =>
             <SpotkanieComponent key={spotkanie.id} title={spotkanie.title} date={spotkanie.data}/>
             )}
             </View></ScrollView>
@@ -79,6 +85,8 @@ const styles = StyleSheet.create({
         width : windowWidth/2 - windowWidth/24,
         marginLeft: windowWidth/48,
         marginRight: windowWidth/48,
+        marginBottom: windowWidth/48,
+        marginTop: windowWidth/48,
         height : windowHeight/6,
         backgroundColor: 'green',
         borderRadius: windowWidth/20,
