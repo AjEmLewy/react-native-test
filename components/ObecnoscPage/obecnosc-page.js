@@ -47,8 +47,7 @@ export default class ObecnoscPage extends React.Component {
     changeObecnosc = async (bierzmowaniecId, switchType) => {
         let valueChanged = false
         let spotkanie = this.context.editting.spotkanieID
-        //let newBierzmowancy = JSON.parse(JSON.stringify(this.state.bierzmowancy))
-        let newBierzmowancy = [...this.state.bierzmowancy]
+        let newBierzmowancy = _.cloneDeep(this.state.bierzmowancy)
         //console.log(newBierzmowancy)
         newBierzmowancy.forEach((b, index) => {
             if (bierzmowaniecId === b.id) {
